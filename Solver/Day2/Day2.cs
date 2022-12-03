@@ -12,12 +12,12 @@ public static class Day2
     public static int Solve1(IEnumerable<string> input)
     {
         var points = 0;
-        foreach (var s in input)
+        var matches = input.Select(i => new Match()
+            { Opponent = i.Split(" ")[0].AsChoice(), Answer = i.Split(" ")[1] });
+        foreach (var match in matches)
         {
-            var match = s.Split(" ");
-
             points += PointsForRound(match);
-            points += PointsForChoice(match[1].toChoice());
+            points += PointsForChoice(match.Answer.AsChoice());
         }
 
         return points;
@@ -26,11 +26,11 @@ public static class Day2
     public static int Solve2(IEnumerable<string> input)
     {
         var points = 0;
-        foreach (var s in input)
+        var matches = input.Select(i => new Match()
+            { Opponent = i.Split(" ")[0].AsChoice(), Answer = i.Split(" ")[1] });
+        foreach (var match in matches)
         {
-            var match = s.Split(" ");
-
-            points += match[1] switch
+            points += match.Answer switch
             {
                 "X" => 0,
                 "Y" => 3,
@@ -42,33 +42,33 @@ public static class Day2
         return points;
     }
 
-    private static int PointsForChoice2(string[] match)
+    private static int PointsForChoice2(Match match)
     {
-        return match[1] switch
+        return match.Answer switch
         {
-            "X" => PointsForChoice(loosingTo(match[0]).toChoice()),
-            "Y" => PointsForChoice(match[0].toChoice()),
-            "Z" => PointsForChoice(winningOver(match[0]).toChoice()),
+            "X" => PointsForChoice(LoosingTo(match.Opponent)),
+            "Y" => PointsForChoice(match.Opponent),
+            "Z" => PointsForChoice(WinningOver(match.Opponent))
         };
     }
 
-    private static string winningOver(string s)
+    private static Choice WinningOver(Choice s)
     {
         return s switch
         {
-            "A" => "B",
-            "B" => "C",
-            "C" => "A",
+            Choice.Rock => Choice.Paper,
+            Choice.Paper => Choice.Scissor,
+            Choice.Scissor => Choice.Rock,
         };
     }
 
-    private static string loosingTo(string s)
+    private static Choice LoosingTo(Choice s)
     {
         return s switch
         {
-            "B" => "A",
-            "C" => "B",
-            "A" => "C",
+            Choice.Paper => Choice.Rock,
+            Choice.Scissor => Choice.Paper,
+            Choice.Rock => Choice.Scissor,
         };
     }
 
@@ -82,54 +82,23 @@ public static class Day2
         };
     }
 
-    private static int PointsForRound(string[] match)
+    private static int PointsForRound(Match match)
     {
-        var opponent = match[0];
-        var me = match[1];
-        switch (me)
+        return match.Answer.AsChoice() switch
         {
-            case "X":
-                switch (opponent)
-                {
-                    case "A":
-                        return 3;
-                    case "B":
-                        return 0;
-                    case "C":
-                        return 6;
-                }
-
-                break;
-            case "Y":
-                switch (opponent)
-                {
-                    case "A":
-                        return 6;
-                    case "B":
-                        return 3;
-                    case "C":
-                        return 0;
-                }
-
-                break;
-            case "Z":
-                switch (opponent)
-                {
-                    case "A":
-                        return 0;
-                    case "B":
-                        return 6;
-                    case "C":
-                        return 3;
-                }
-
-                break;
-        }
-
-        throw new Exception("Marche pas");
+            Choice.Rock when match.Opponent == Choice.Rock => 3,
+            Choice.Rock when match.Opponent == Choice.Paper => 0,
+            Choice.Rock when match.Opponent == Choice.Scissor => 6,
+            Choice.Paper when match.Opponent == Choice.Rock => 6,
+            Choice.Paper when match.Opponent == Choice.Paper => 3,
+            Choice.Paper when match.Opponent == Choice.Scissor => 0,
+            Choice.Scissor when match.Opponent == Choice.Rock => 0,
+            Choice.Scissor when match.Opponent == Choice.Paper => 6,
+            Choice.Scissor when match.Opponent == Choice.Scissor => 3,
+        };
     }
 
-    private static Choice toChoice(this string input)
+    private static Choice AsChoice(this string input)
     {
         return input switch
         {
@@ -140,5 +109,11 @@ public static class Day2
             "Y" => Choice.Paper,
             "Z" => Choice.Scissor,
         };
+    }
+
+    private class Match
+    {
+        public Choice Opponent;
+        public string Answer;
     }
 }
