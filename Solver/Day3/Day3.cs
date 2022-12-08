@@ -1,13 +1,7 @@
-﻿namespace Solver.Day2;
+﻿namespace Solver.Day3;
 
 public class Day3
 {
-    public static void Run()
-    {
-        var input = File.ReadLines(@"C:\Users\Alex\RiderProjects\AOC22\Solver\Day3\input.txt");
-        Console.WriteLine(Solve1(input)); //7793
-        Console.WriteLine(Solve2(input));
-    }
 
     public static int Solve1(IEnumerable<string> input)
     {
