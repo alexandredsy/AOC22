@@ -39,12 +39,12 @@ public class Day8Test
     [Test]
     public void Validates2()
     {
-        Day8.Solve2(values).Should().Be(24933642);
+        Day8.Solve2(values).Should().Be(8);
     }
 
     [Test]
     public void Solves2()
     {
-        Day8.Solve2(InputHelper.GetLinesForDay(8)).Should().Be(8278005);
+        Day8.Solve2(InputHelper.GetLinesForDay(8)).Should().Be(313200);
     }
 }
